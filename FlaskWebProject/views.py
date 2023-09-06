@@ -57,6 +57,7 @@ def post(id):
     form = PostForm(formdata=request.form, obj=post)
     if form.validate_on_submit():
         post.save_changes(form, request.files['image_path'], current_user.id)
+        flash(f'post "{post.title}" updated successfully')
         return redirect(url_for('home'))
     return render_template(
         'post.html',
@@ -74,14 +75,14 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            logger.info("Invalid login attempt")
             flash('Invalid username or password')
+            app.logger.warning("Invalid login attempt!")
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
+            app.logger.warning(f"{user.username} logged in successfully")
             next_page = url_for('home')
-            logger.info("admin logged in successfully")
         return redirect(next_page)
     session["state"] = str(uuid.uuid4())
     auth_url = _build_auth_url(scopes=["User.Read"], state=session["state"])
