@@ -12,9 +12,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 from FlaskWebProject.models import User, Post
 import msal
 import uuid
-import logging
-
-logger = logging.getLogger(__name__)
 
 imageSourceUrl = 'https://' + app.config['BLOB_ACCOUNT'] + '.blob.core.windows.net/' + app.config[
     'BLOB_CONTAINER'] + '/'
@@ -40,7 +37,7 @@ def new_post():
     if form.validate_on_submit():
         post = Post()
         post.save_changes(form, request.files['image_path'], current_user.id, new=True)
-        logger.info("Creating post successfully")
+        app.logger.info("Post successfully created.")
         return redirect(url_for('home'))
     return render_template(
         'post.html',
@@ -57,7 +54,6 @@ def post(id):
     form = PostForm(formdata=request.form, obj=post)
     if form.validate_on_submit():
         post.save_changes(form, request.files['image_path'], current_user.id)
-        flash(f'post "{post.title}" updated successfully')
         return redirect(url_for('home'))
     return render_template(
         'post.html',
@@ -76,13 +72,13 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            app.logger.warning("Invalid login attempt!")
+            app.logger.error("Invalid username or password.")
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            app.logger.warning(f"{user.username} logged in successfully")
             next_page = url_for('home')
+        app.logger.info("User successfully logged in.")
         return redirect(next_page)
     session["state"] = str(uuid.uuid4())
     auth_url = _build_auth_url(scopes=["User.Read"], state=session["state"])
@@ -98,8 +94,13 @@ def authorized():
     if request.args.get('code'):
         cache = _load_cache()
         # TODO: Acquire a token from a built msal app, along with the appropriate redirect URI
-        result = _build_msal_app(cache).acquire_token_by_authorization_code(request.args["code"], scopes=['User.Read'],
-                                                                            redirect_uri=url_for('authorized', _external=True, _scheme='https'))
+        result = _build_msal_app(
+            cache=cache).acquire_token_by_authorization_code(
+            request.args["code"],
+            scopes=Config.SCOPE,
+            redirect_uri=url_for("authorized",
+                                 _external=True,
+                                 _scheme="https"))
         if "error" in result:
             return render_template("auth_error.html", result=result)
         session["user"] = result.get("id_token_claims")
@@ -142,8 +143,10 @@ def _save_cache(cache):
 def _build_msal_app(cache=None, authority=None):
     # TODO: Return a ConfidentialClientApplication
     return msal.ConfidentialClientApplication(
-        Config.CLIENT_ID, authority=authority or Config.AUTHORITY,
-        client_credential=Config.CLIENT_SECRET, token_cache=cache)
+        Config.CLIENT_ID,
+        authority=authority or Config.AUTHORITY,
+        client_credential=Config.CLIENT_SECRET,
+        token_cache=cache)
 
 
 def _build_auth_url(authority=None, scopes=None, state=None):
@@ -151,4 +154,4 @@ def _build_auth_url(authority=None, scopes=None, state=None):
     return _build_msal_app(authority=authority).get_authorization_request_url(
         scopes or [],
         state=state or str(uuid.uuid4()),
-        redirect_uri=url_for('authorized', _external=True, _scheme='https'))
+        redirect_uri=url_for("authorized", _external=True, _scheme="https"))
