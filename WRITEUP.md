@@ -47,4 +47,4 @@ _Availability_
 ### Assess app changes that would change your decision.
 
 _Detail how the app and any other needs would have to change for you to change your decision in the last section._
-I thought if the higher complexity of a CMS Application requirements which couldn't be accommodated by the constraints of Azure App Service as deep-level server configurations or OS-Level customizations, specialized software tasks, so I will lean on using WM or in the other case, our CMS application could be required exceptionally high performances that necessitate specific hardware configurations or low-level optimizations, WMs will be the better choice to handle those performances
+I thought if the higher complexity of a CMS Application requirements which couldn't be accommodated by the constraints of Azure App Service as deep-level server configurations or OS-Level customizations, specialized software tasks, so I will lean on using vM or in the other case, our CMS application could be required exceptionally high performances that necessitate specific hardware configurations or low-level optimizations, VM will be the better choice to handle those performances
