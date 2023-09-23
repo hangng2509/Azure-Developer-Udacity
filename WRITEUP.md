@@ -5,21 +5,22 @@
 _For **both** a VM or App Service solution for the CMS app:_
 
 - _Analyze costs, scalability, availability, and workflow_
-- **_Virtual Machine_**
+  
+ **_Virtual Machine(VM)_**
 
 _Costs_
 
-- [ ] WM typically have a higher cost and you will need to provision and manage WM hardware and software licenses, infrastructure
-- [ ] You need an ongoing cost for WM storage, maintenance, security, data transfer
+- [ ] VM typically have a higher cost and you will need to provision and manage VM hardware and software licenses, infrastructure
+- [ ] You need an ongoing cost for VM storage, maintenance, security, data transfer
 
 _Scalability_
 
-- [ ] WM can be scaled vertically by resizing WM, that is the reason scalability in WM may be had the downtime and sometimes it would be limit because of vertical scalability
-- [ ] However, WM can also be scaled horizontally by adding more instances
+- [ ] VM can be scaled vertically by resizing VM, that is the reason scalability in VM may be had the downtime and sometimes it would be limit because of vertical scalability
+- [ ] However, VM can also be scaled horizontally by adding more instances
 
 _Availability_
 
-- [ ] WM requires high achieving availability by setting up redundancy, load balancing, etc. The availability of WM depended on the reliability of underlying WM infrastructure
+- [ ] VM requires high achieving availability by setting up redundancy, load balancing, etc. The availability of VM depended on the reliability of underlying VM infrastructure
 - [ ] You will need a plan for disaster recovery and backup technologies
 
 **_App Service_**
