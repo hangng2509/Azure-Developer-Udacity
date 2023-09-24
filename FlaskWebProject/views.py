@@ -72,7 +72,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            app.logger.error("Invalid username or password.")
+            app.logger.info("Invalid username or password.")
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -97,7 +97,7 @@ def authorized():
         result = _build_msal_app(
             cache=cache).acquire_token_by_authorization_code(
             request.args["code"],
-            scopes=Config.SCOPE,
+            scopes=["User.Read"],
             redirect_uri=url_for("authorized",
                                  _external=True,
                                  _scheme="https"))
