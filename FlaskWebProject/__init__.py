@@ -12,9 +12,10 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.config['WTF_CSRF_ENABLED'] = False
 # TODO: Add any logging levels and handlers with app.logger
-
-# Configure logging
-logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+app.logger.setLevel(logging.INFO)
+streamHandler = logging.StreamHandler()
+streamHandler.setLevel(logging.INFO)
+app.logger.addHandler(streamHandler)
 
 Session(app)
 db = SQLAlchemy(app)
