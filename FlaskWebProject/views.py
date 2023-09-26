@@ -79,7 +79,7 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
-        app.logger.error("Invalid username or password.")("Logged in successfully: %s", username)
+        app.logger.info("Logged in successfully")
         return redirect(next_page)
     session["state"] = str(uuid.uuid4())
     auth_url = _build_auth_url(scopes=["User.Read"], state=session["state"])
